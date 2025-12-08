@@ -1,7 +1,7 @@
 ---
 title: "Week 12 Worklog"
-date: "2025-11-24"
-weight: 2
+date: "`r.Sys.Date()`"
+weight: 12
 chapter: false
 pre: " <b> 1.12. </b> "
 ---
@@ -15,12 +15,12 @@ pre: " <b> 1.12. </b> "
 
 ### Tasks carried out this week:
 | Day | Task                                                                                                                                                                                                   | Start Date | Completion Date | Reference Material                        |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- | --------------- | ----------------------------------------- |
-| 2   | - Get acquainted with FCJ members <br> - Read and take note of internship unit rules and regulations                                                                                                   | 08/11/2025 | 08/11/2025      |
-| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 08/12/2025 | 08/12/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 08/13/2025 | 08/13/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 08/14/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 08/15/2025 | 08/15/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |-----------------| ----------------------------------------- |
+| 2   | - **Configure AWS Toolkit for VS Code to utilize Amazon Q and CodeWhisperer** <br>&emsp; + Install the AWS Toolkit extension for Visual Studio Code <br>&emsp; + Connect AWS accounts and configure the target AWS Region <br>&emsp; + Set up authentication using IAM Identity Center, IAM credentials, or AWS Builder ID <br>&emsp; + Explore and manage AWS resources directly through the AWS Explorer interface <br>&emsp; + Utilize Amazon Q to explain, debug, and optimize application code <br>&emsp; + Leverage Amazon CodeWhisperer for real-time code suggestions and security scanning <br> - **Automate EBS Snapshot Archiving using Amazon Data Lifecycle Manager** <br>&emsp; + Launch an EC2 instance to prepare EBS volumes for snapshot management <br>&emsp; + Configure a Data Lifecycle Manager policy with a single schedule for snapshot creation and archival <br>&emsp; + Create and apply multiple policy schedules to handle complex retention strategies <br>&emsp; + Review the policy execution results to verify successful snapshot creation and archival status | 11/24/2025 | 11/24/2025      | **AWS Toolkit Configuration:** <https://000087.awsstudygroup.com/> <br> **EBS Snapshot Archiving:** <https://000088.awsstudygroup.com/> |
+| 3   | - Learn about AWS and its types of services <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                              | 11/25/2025 | 11/25/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| 4   | - Create AWS Free Tier account <br> - Learn about AWS Console & AWS CLI <br> - **Practice:** <br>&emsp; + Create AWS account <br>&emsp; + Install & configure AWS CLI <br> &emsp; + How to use AWS CLI | 11/26/2025 | 11/26/2025      | <https://cloudjourney.awsstudygroup.com/> |
+| 5   | - Learn basic EC2: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - SSH connection methods to EC2 <br> - Learn about Elastic IP   <br>                            | 11/27/2025 | 11/27/2025       | <https://cloudjourney.awsstudygroup.com/> |
+| 6   | - **Practice:** <br>&emsp; + Launch an EC2 instance <br>&emsp; + Connect via SSH <br>&emsp; + Attach an EBS volume                                                                                     | 11/28/2025 | 11/28/2025      | <https://cloudjourney.awsstudygroup.com/> |
 
 
 ### Week 12 Achievements:

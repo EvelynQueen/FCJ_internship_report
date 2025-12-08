@@ -5,21 +5,21 @@ weight: 0
 chapter: false
 ---
 
-    
 # Internship Report
 
 ### Student Information:
-&emsp; **Full Name:** Le Tri Dung
 
-&emsp; **Phone Number:** 0941423585 
+&emsp; **Full Name:** Tran Thi Le Quyen
 
-&emsp; **Email:** tridungit2005@gmail.com
+&emsp; **Phone Number:** 0398485105
+
+&emsp; **Email:** quyenneblog@gmail.com
 
 &emsp; **University:** FPT Ho Chi Minh University
 
-&emsp; **Major:** Data Science
+&emsp; **Major:** Information system
 
-&emsp; **Student ID:** SE196261 
+&emsp; **Student ID:** SE196442
 
 &emsp; **Internship Company:** Amazon Web Services Vietnam Co., Ltd.
 

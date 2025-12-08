@@ -6,8 +6,6 @@ chapter: false
 pre: " <b> 1. </b> "
 ---
 
-
-
 **Tuần 1:** [Làm quen với nhóm và nắm vững các kiến thức cơ bản về AWS](1.1-Week1/)
 
 **Tuần 2:** [Phân tích phạm vi dự án trò chơi gõ phím, AWS microservices và nền tảng vận hành](1.2-Week2/)

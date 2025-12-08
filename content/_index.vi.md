@@ -6,18 +6,20 @@ chapter: false
 ---
 
 # Báo cáo thực tập
+
 ### Thông tin sinh viên:
-&emsp; **Họ và tên:** Lê Trí Dũng
 
-&emsp; **Số điện thoại:** 0941423585
+&emsp; **Họ và tên:** Trần Thị Lệ Quyên
 
-&emsp; **Email:** tridungit2005@gmail.com
+&emsp; **Số điện thoại:** 0398485105
+
+&emsp; **Email:** quyenneblog@gmail.com
 
 &emsp; **Trường:** Đại học FPT TP.HCM
 
-&emsp; **Ngành:** Khoa học dữ liệu
+&emsp; **Ngành:** Hệ Thống Thông Tin
 
-&emsp; **MSSV:** SE196261
+&emsp; **MSSV:** SE196442
 
 &emsp; **Công ty thực tập:** Công ty TNHH Amazon Web Services Vietnam
 
@@ -26,8 +28,6 @@ chapter: false
 &emsp; **Thời gian thực tập:** Từ 09/2025 đến 12/2025
 
 ![Ảnh đại diện của bạn](/images/myface.png)
-
-
 
 ### Nội dung báo cáo
 

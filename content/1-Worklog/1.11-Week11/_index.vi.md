@@ -1,68 +1,71 @@
 ---
-title: "Worklog Tuần 11"
+title: "Week 11 Worklog"
 date: "`r Sys.Date()`"
 weight: 11
 chapter: false
 pre: " <b> 1.11. </b> "
 ---
 
+### Mục tiêu Tuần 11:
 
+- Tham gia buổi sinh hoạt cộng đồng AWS để tìm hiểu sâu hơn về các dịch vụ nâng cao và thực tiễn tối ưu.
+- Xây dựng dịch vụ xử lý văn bản dạng serverless với thiết kế bảng DynamoDB và cấu hình IAM.
+- Phát triển các hàm truy vấn cơ sở dữ liệu hỗ trợ phân trang và bộ lọc điều kiện.
+- Tạo hệ thống cache trong bộ nhớ và kiểm tra tính hợp lệ của yêu cầu API.
+- Tích hợp Amazon Bedrock Agent để tạo nội dung đoạn văn bằng AI.
+- Thiết lập các công cụ giám sát và gỡ lỗi cho ứng dụng serverless.
+- Phát triển API GraphQL với AWS AppSync và các resolver dùng DynamoDB.
 
-### Mục tiêu tuần 11:
+### Nhiệm vụ trong tuần:
 
-* Tham gia sự kiện cộng đồng AWS để tìm hiểu thêm về các dịch vụ cloud nâng cao và best practices.
-* Xây dựng hạ tầng serverless cho text service với thiết kế DynamoDB table và cấu hình IAM role.
-* Hiện thực các hàm truy xuất dữ liệu với hỗ trợ phân trang và filter expressions.
-* Phát triển cơ chế caching trong bộ nhớ và logic kiểm tra/validate request từ API.
-* Tích hợp Amazon Bedrock Agent để sinh văn bản đoạn (paragraph) bằng AI.
-* Cấu hình công cụ giám sát và debug cho serverless applications.
-* Phát triển GraphQL APIs sử dụng AWS AppSync với DynamoDB resolvers.
+| Day | Task                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | Start Date | Completion Date | Reference Material                                                                                                                            |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2   | - **Tham dự sự kiện “AWS Cloud Mastery Series #2”**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | 11/17/2025 | 11/17/2025      |
+| 3   | - **Khởi tạo nền tảng serverless cho text service:** <br>&emsp; + Tạo bảng DynamoDB `wordsntexts` với partition key dạng chuỗi để lưu từ và đoạn văn <br>&emsp; + Cấu hình IAM cho phép `dynamodb:Scan`, `dynamodb:Query` và ghi log CloudWatch <br>&emsp; + Tạo khung Lambda handler ban đầu và thiết lập các đối tượng kết nối DB qua `boto3` <br><br> - **Xây dựng các hàm truy xuất cơ sở dữ liệu:** <br>&emsp; + Tạo `fetch_words_from_db` sử dụng Scan cùng `LastEvaluatedKey` cho phân trang <br>&emsp; + Tạo `fetch_paragraph_from_db` áp dụng filter cho loại nội dung và độ dài                                                                                                                                                                                                                                                                   | 11/18/2025 | 11/18/2025      |
+| 4   | - **Phát triển cơ chế cache và xử lý dữ liệu:** <br>&emsp; + Tạo cache trong bộ nhớ với TTL 300 giây để giảm tần suất Scan <br>&emsp; + Xây dựng `get_random_words` để lấy dữ liệu từ cache hoặc DB và chọn ngẫu nhiên <br>&emsp; + Xây dựng `get_paragraph` để kiểm soát độ dài (1–3) và tách chuỗi nội dung thành danh sách từ <br><br> - **Thực hiện kiểm tra dữ liệu vào và chuẩn hóa phản hồi API:** <br>&emsp; + Viết `Decimal_encoder` để tuần tự hóa giá trị số của DynamoDB sang JSON <br>&emsp; + Kiểm tra tham số `type` và `count` nhằm xử lý các lỗi `TypeError` và `ValueError` <br>&emsp; + Chuẩn hóa cấu trúc JSON trả về cùng mã trạng thái và header nhất quán                                                                                                                                                                            | 11/19/2025 | 11/19/2025      |
+| 5   | - **Tích hợp Amazon Bedrock Agent để tạo nội dung sinh:** <br>&emsp; + Mở rộng quyền IAM để cho phép `bedrock:InvokeAgent` và liên kết Agent ID `HUEBUXSALX` <br>&emsp; + Khởi tạo client `bedrock-agent-runtime` và triển khai lời gọi `invoke_agent` kèm quản lý phiên <br>&emsp; + Phát triển xử lý dữ liệu streaming và ghép nối các byte đã giải mã <br><br> - **Thử nghiệm prompt và mô hình:** <br>&emsp; + Thiết kế prompt đảm bảo Agent trả về đúng ba đoạn văn ngăn cách bằng dòng trống <br>&emsp; + Thử nhiều mô hình để duy trì định dạng ổn định cho logic tách nội dung <br>&emsp; + Tạo bộ xử lý phân tách đầu ra AI                                                                                                                                                                                                                        | 11/20/2025 | 11/20/2025      |
+| 6   | - **Giám sát và gỡ lỗi ứng dụng serverless bằng CloudWatch và X-Ray** <br>&emsp; + Phân tích log Lambda trong CloudWatch để tìm và khắc phục lỗi chạy <br>&emsp; + Tạo metric tùy chỉnh để theo dõi hiệu năng theo nhu cầu ứng dụng <br>&emsp; + Thiết lập CloudWatch Alarms để cảnh báo khi vượt ngưỡng quan trọng <br>&emsp; + Bật X-Ray để quan sát service map và phát hiện điểm nghẽn độ trễ <br><br> - **Xây dựng API GraphQL với AWS AppSync và DynamoDB resolvers** <br>&emsp; + Chuẩn bị môi trường AppSync và kết nối DynamoDB làm nguồn dữ liệu <br>&emsp; + Xây dựng các resolver cho thao tác ghi và đọc dữ liệu đơn lẻ <br>&emsp; + Tạo resolver Update và Delete để quản lý vòng đời dữ liệu <br>&emsp; + Thực thi Scan và Query để hỗ trợ lấy dữ liệu hàng loạt <br>&emsp; + Tạo resolver phức tạp để xử lý cấu trúc dữ liệu dạng lồng nhau | 11/21/2025 | 11/21/2025      | CloudWatch and X-Ray Monitoring: <br> <https://000085.awsstudygroup.com/> <br> AppSync GraphQL APIs: <br> <https://000086.awsstudygroup.com/> |
 
-### Các công việc thực hiện trong tuần:
-| Thứ | Công việc | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu |
-|-----|-----------|--------------|------------------|----------------|
-| 2   | - Tham gia sự kiện "AWS Cloud Mastery Series #2" để cập nhật kiến thức về các dịch vụ AWS nâng cao và cách thiết kế giải pháp thực tế. | 17/11/2025 | 17/11/2025 | |
-| 3   | - Khởi tạo hạ tầng serverless cho text service: <br>&emsp; + Tạo DynamoDB table `wordsntexts` với partition key kiểu string để lưu trữ từ (words) và đoạn văn (paragraphs) <br>&emsp; + Cấu hình IAM execution role với quyền `dynamodb:Scan`, `dynamodb:Query` và ghi log lên CloudWatch <br>&emsp; + Thiết lập Lambda handler ban đầu và tạo các đối tượng kết nối database qua `boto3` <br><br> - Xây dựng các hàm truy xuất dữ liệu từ cơ sở dữ liệu: <br>&emsp; + Phát triển hàm `fetch_words_from_db` sử dụng DynamoDB Scan kết hợp `LastEvaluatedKey` để phân trang (pagination) <br>&emsp; + Phát triển hàm `fetch_paragraph_from_db` áp dụng filter expression dựa trên thuộc tính content type và length | 18/11/2025 | 18/11/2025 | |
-| 4   | - Cài đặt cơ chế caching và xử lý dữ liệu: <br>&emsp; + Thiết kế global cache dictionary trong bộ nhớ với TTL 300 giây để giảm tần suất Scan DynamoDB <br>&emsp; + Cài đặt logic `get_random_words` để ưu tiên lấy dữ liệu từ cache, fallback về DB và thực hiện random sampling <br>&emsp; + Cài đặt logic `get_paragraph` để clamp giá trị length trong khoảng 1–3 và tách chuỗi nội dung thành danh sách từ <br><br> - Phát triển validation cho API request và chuẩn hóa response: <br>&emsp; + Tạo lớp `Decimal_encoder` custom để serialize đúng các numeric type của DynamoDB khi xuất JSON <br>&emsp; + Bổ sung các khối kiểm tra input cho query parameters `type` và `count` để xử lý `TypeError` và `ValueError` <br>&emsp; + Chuẩn hóa cấu trúc JSON response với HTTP status code và headers phù hợp | 19/11/2025 | 19/11/2025 | |
-| 5   | - Tích hợp Amazon Bedrock Agent cho khả năng sinh nội dung: <br>&emsp; + Cập nhật IAM permissions để bổ sung quyền `bedrock:InvokeAgent` và gán với Agent ID `HUEBUXSALX` <br>&emsp; + Khởi tạo client `bedrock-agent-runtime` và cài đặt lệnh `invoke_agent` kèm quản lý session <br>&emsp; + Xây dựng logic xử lý streaming response để ghép nối các byte chunk thành một chuỗi hoàn chỉnh <br><br> - Thực hiện prompt engineering và thử nghiệm model: <br>&emsp; + Thiết kế các "trigger" prompt để Agent trả về đúng ba đoạn văn được ngăn cách bằng dòng trống <br>&emsp; + Thử nghiệm nhiều model nền tảng khác nhau để đảm bảo format đầu ra ổn định cho logic tách đoạn <br>&emsp; + Hiện thực phần parsing để tách output AI thành các đoạn riêng biệt | 20/11/2025 | 20/11/2025 | |
-| 6   | - Giám sát và debug serverless applications với CloudWatch và X-Ray: <br>&emsp; + Phân tích CloudWatch Logs của Lambda để xác định và xử lý lỗi thực thi <br>&emsp; + Định nghĩa và thu thập custom metrics phản ánh hiệu năng và hành vi ứng dụng <br>&emsp; + Cấu hình CloudWatch Alarms để gửi cảnh báo khi các metric vượt ngưỡng quan trọng <br>&emsp; + Bật AWS X-Ray tracing để trực quan hóa service map và phát hiện các điểm nghẽn độ trễ <br><br> - Phát triển GraphQL APIs với AWS AppSync và DynamoDB resolvers: <br>&emsp; + Chuẩn bị môi trường AppSync và cấu hình DynamoDB làm data source <br>&emsp; + Cài đặt resolvers cho các thao tác Write và Read với từng item dữ liệu <br>&emsp; + Cấu hình resolvers cho Update và Delete để quản lý vòng đời dữ liệu <br>&emsp; + Thực thi Scan và Query để phục vụ nhu cầu truy vấn tập dữ liệu lớn qua API <br>&emsp; + Thiết kế và cài đặt các complex object resolvers để xử lý cấu trúc dữ liệu lồng nhau | 21/11/2025 | 21/11/2025 | CloudWatch and X-Ray Monitoring: <br> <https://000085.awsstudygroup.com/> <br> AppSync GraphQL APIs: <br> <https://000086.awsstudygroup.com/> |
+### Thành tựu Tuần 11:
 
+- Tham gia chương trình “AWS Cloud Mastery Series #2” để mở rộng hiểu biết về các tính năng nâng cao của AWS.
 
-### Kết quả đạt được tuần 11:
+- Hoàn chỉnh hạ tầng serverless cho ứng dụng luyện gõ văn bản:
 
-* Tham gia sự kiện "AWS Cloud Mastery Series #2" và cập nhật kiến thức về các dịch vụ AWS nâng cao, mô hình kiến trúc thực tế và những best practices trong vận hành.
+  - Tạo bảng DynamoDB `wordsntexts` với partition key dạng chuỗi, chứa khoảng 64.726 mục từ và đoạn văn.
+  - Cấu hình IAM để kích hoạt Scan/Query DynamoDB và ghi log CloudWatch.
+  - Thiết lập Lambda (128 MB RAM, timeout 15s) với đối tượng kết nối DB qua `boto3`.
 
-* Xây dựng hạ tầng serverless cho ứng dụng luyện gõ văn bản:
-  * Tạo DynamoDB table `wordsntexts` với partition key kiểu string để lưu khoảng hơn 64.000 từ và đoạn văn.
-  * Cấu hình IAM execution role cho phép DynamoDB Scan/Query và ghi log lên CloudWatch.
-  * Thiết lập Lambda handler (128 MB memory, timeout 15 giây) cùng các đối tượng kết nối database bằng `boto3`.
+- Hoàn thiện các thành phần truy vấn cơ sở dữ liệu:
 
-* Hiện thực các thuật toán truy xuất dữ liệu:
-  * Phát triển hàm `fetch_words_from_db` sử dụng DynamoDB Scan kết hợp `LastEvaluatedKey` để xử lý phân trang.
-  * Xây dựng hàm `fetch_paragraph_from_db` với filter expression dựa trên content type và length (short: 10–25 từ, medium: 25–60 từ, long: trên 60 từ).
+  - Viết `fetch_words_from_db` dùng Scan kết hợp phân trang bằng `LastEvaluatedKey`.
+  - Viết `fetch_paragraph_from_db` với bộ lọc độ dài (ngắn: 10–25, trung bình: 25–60, dài: 60+ từ).
 
-* Tối ưu hiệu năng ứng dụng và xử lý request:
-  * Thiết kế hệ thống cache trong bộ nhớ với TTL 300 giây để giảm số lần Scan DynamoDB cho tải dự kiến ~500 request/giờ.
-  * Cài đặt các hàm `get_random_words` và `get_paragraph` với random sampling và cơ chế giới hạn length trong khoảng 1–3.
-  * Tạo lớp `Decimal_encoder` để serialize chính xác các numeric type của DynamoDB khi trả về JSON.
-  * Thêm kiểm tra đầu vào cho query parameters `type` và `count` để xử lý lỗi `TypeError`/`ValueError` hợp lý.
-  * Chuẩn hóa JSON response với HTTP status codes và headers rõ ràng.
+- Tối ưu hiệu năng và xử lý yêu cầu:
 
-* Tích hợp Amazon Bedrock Agent để sinh đoạn văn bằng AI:
-  * Mở rộng IAM permissions với `bedrock:InvokeAgent` và cấu hình truy cập đến Agent ID `HUEBUXSALX`.
-  * Khởi tạo client `bedrock-agent-runtime` với cơ chế session cho các lời gọi `invoke_agent`.
-  * Xây dựng logic ghép các streaming byte chunk thành chuỗi văn bản hoàn chỉnh.
-  * Thiết kế trigger prompts để sinh đúng ba đoạn văn ngăn cách bằng dòng trống, phục vụ tính năng thử thách gõ hàng ngày.
-  * Cài đặt logic parsing tách output AI thành các trường JSON.
+  - Tạo hệ thống cache TTL 300 giây để giảm tải Scan cho ~500 yêu cầu/giờ.
+  - Xây dựng `get_random_words` và `get_paragraph` với lấy mẫu ngẫu nhiên và giới hạn độ dài (1–3).
+  - Viết `Decimal_encoder` để chuyển đổi số DynamoDB sang JSON đúng chuẩn.
+  - Tăng kiểm tra hợp lệ cho tham số `type` và `count`.
+  - Chuẩn hóa phản hồi API với mã trạng thái và header đồng nhất.
 
-* Cấu hình khả năng quan sát (observability) và debug cho serverless applications:
-  * Phân tích log thực thi của Lambda trong CloudWatch để bắt lỗi và tối ưu.
-  * Tạo custom CloudWatch metrics theo dõi hiệu năng và hành vi ứng dụng.
-  * Thiết lập CloudWatch Alarms với ngưỡng quan trọng cho error rate và duration.
-  * Bật AWS X-Ray để xem service map và nhận diện các đoạn có độ trễ cao.
+- Tích hợp Amazon Bedrock Agent để sinh đoạn văn:
 
-* Phát triển GraphQL APIs với AWS AppSync:
-  * Cấu hình AppSync và DynamoDB làm data source.
-  * Hiện thực resolvers cho các thao tác Write, Read, Update, Delete.
-  * Cấu hình các Scan/Query resolvers cho nhu cầu truy vấn tập dữ liệu lớn.
-  * Thiết kế complex object resolvers để xử lý cấu trúc dữ liệu lồng nhau và quan hệ giữa các thực thể.
+  - Cập nhật IAM bao gồm quyền `bedrock:InvokeAgent` và liên kết Agent ID `HUEBUXSALX`.
+  - Thiết lập gọi `bedrock-agent-runtime` kèm quản lý phiên.
+  - Xây dựng bộ xử lý tái tạo nội dung từ các luồng byte.
+  - Chuẩn bị prompt để tạo ba đoạn văn tách bằng dòng trống.
+  - Thêm logic tách nội dung AI sau khi sinh.
+
+- Hoàn thiện khả năng giám sát và phân tích lỗi:
+
+  - Rà soát log CloudWatch để tìm lỗi thực thi.
+  - Thêm metric tùy chỉnh theo nhu cầu ứng dụng.
+  - Thiết lập cảnh báo CloudWatch cho ngưỡng nghiêm trọng.
+  - Kích hoạt X-Ray để phân tích đường đi dịch vụ và độ trễ.
+
+- Phát triển API GraphQL với AWS AppSync:
+  - Chuẩn bị môi trường và kết nối DynamoDB làm datasource.
+  - Tạo resolver cho CRUD (Tạo/Đọc/Cập nhật/Xóa).
+  - Tạo Scan và Query resolver cho truy vấn số lượng lớn.
+  - Phát triển resolver phức tạp cho cấu trúc dữ liệu lồng nhau.

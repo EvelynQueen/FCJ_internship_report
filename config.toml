@@ -1,4 +1,4 @@
-baseURL = "https://itsbim.github.io/internship_report/"
+baseURL = "https://github.com/EvelynQueen/FCJ_internship_report.git"
 relativeURLs = true
 canonifyURLs = true
 

@@ -6,8 +6,7 @@ chapter: false
 pre: " <b> 6. </b> "
 ---
 
-Trong thời gian thực tập tại **[Tên công ty/tổ chức]** từ **[ngày bắt đầu]** đến **[ngày kết thúc]**, tôi đã có cơ hội vận dụng những kiến thức đã học vào môi trường làm việc thực tế.  
-Tôi tham gia vào **[mô tả ngắn về dự án hoặc nhiệm vụ chính]**, qua đó giúp tôi phát triển thêm các kỹ năng như **[kỹ năng: lập trình, phân tích, báo cáo, giao tiếp, v.v..]**.
+Trong thời gian thực tập tại **mazon Web Services Vietnam Co., Ltd.** từ ngày **09/2025** đến ngày **12/2025**, tôi đã có cơ hội vận dụng những kiến thức đã học vào môi trường làm việc thực tế.
 
 Về tác phong làm việc, tôi luôn cố gắng hoàn thành tốt nhiệm vụ, tuân thủ quy định và chủ động phối hợp với đồng nghiệp để tăng hiệu quả công việc.
 

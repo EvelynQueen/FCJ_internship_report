@@ -6,9 +6,10 @@ chapter: false
 pre: " <b> 4. </b> "
 ---
 
-During my internship, I participated in [x] events. Each one was a memorable experience that provided new, interesting, and useful knowledge, along with gifts and wonderful moments.
+During my internship, I participated in 5 events. Each one was a memorable experience that provided new, interesting, and useful knowledge, along with gifts and wonderful moments.
 
 ### [Kick-off AWS FCJ Workforce](4.1-Kick-off/)
+
 &emsp;**Event Name:** Kick-off AWS FCJ Workforce - FPTU OJT FALL 2025
 
 &emsp;**Date & Time:** 08:30, September 06, 2025
@@ -24,9 +25,10 @@ During my internship, I participated in [x] events. Each one was a memorable exp
 ---
 
 ### [Data Science On AWS](4.2-Event2/)
+
 &emsp;**Event Name:** Data Science On AWS
 
-&emsp;**Date & Time:** 09:30, October 16, 2025  
+&emsp;**Date & Time:** 09:30, October 16, 2025
 
 &emsp;**Location:** FPT University HCMC, Hi-Tech Park, Thu Duc, Ho Chi Minh City
 
@@ -39,7 +41,8 @@ During my internship, I participated in [x] events. Each one was a memorable exp
 ---
 
 ### [Reinventing DevOps with AWS Generative AI](4.3-Event3/)
-&emsp;**Event Name:** Reinventing DevOps with AWS Generative AI  
+
+&emsp;**Event Name:** Reinventing DevOps with AWS Generative AI
 
 &emsp;**Date & Time:** 19:30, October 16, 2025
 
@@ -54,7 +57,8 @@ During my internship, I participated in [x] events. Each one was a memorable exp
 ---
 
 ### [Generative AI with Amazon Bedrock](4.4-Event4/)
-&emsp;**Event Name:** Generative AI with Amazon Bedrock  
+
+&emsp;**Event Name:** Generative AI with Amazon Bedrock
 
 &emsp;**Date & Time:** 8:30, November 15, 2025
 
@@ -69,7 +73,8 @@ During my internship, I participated in [x] events. Each one was a memorable exp
 ---
 
 ### [DevOps on AWS](4.5-Event5/)
-&emsp;**Event Name:** DevOps on AWS  
+
+&emsp;**Event Name:** DevOps on AWS
 
 &emsp;**Date & Time:** 8:30, November 17, 2025
 

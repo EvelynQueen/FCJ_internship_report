@@ -1,87 +1,215 @@
 ---
-title: "Blog 3"
-date: "`r Sys.Date()`"
+title: "Simplify log rotation with Amazon S3 Express One Zone"
+date: "2025-08-14"
 weight: 1
 chapter: false
-pre: " <b> 3.3. </b> "
+pre: " <b> 3.2. </b> "
 ---
 
-# Nâng cao trải nghiệm kiểm thử cục bộ cho các ứng dụng serverless với LocalStack
+## AWS Storage Blog
 
-> by Patrick Galvin and Debasis Rath
+# Simplify log rotation with Amazon S3 Express One Zone
 
-Bài viết này giới thiệu và giải thích các khả năng mới được thiết kế để đơn giản hóa trải nghiệm kiểm thử cục bộ cho ứng dụng serverless. Thông qua tích hợp với **AWS Partner**, **LocalStack**, **AWS Toolkit for Visual Studio Code** nay cung cấp một cách tinh gọn hơn để developer build, test và debug ứng dụng serverless mà không phải rời môi trường phát triển.
-
----
-
-## Thách thức với phát triển Local Serverless
-
-Mặc dù kiến trúc serverless nhìn chung đơn giản trong vận hành và mở rộng, quá trình phát triển và kiểm thử có thể tạo ra ma sát làm chậm vòng lặp code–test–debug. Developer thường gặp một số trở ngại phổ biến:
-* **Slow Iteration from Cloud-Based Validation:** Trước đây phải deploy các template AWS Serverless Application Model (AWS SAM) lên cloud chỉ để test thay đổi, làm chậm đáng kể vòng phản hồi.
-* **Friction from Tool Context Switching:** Việc phải chuyển đổi liên tục giữa IDE, CLI và các resource emulator như LocalStack dẫn đến quy trình phân mảnh, kém hiệu quả.
-* **Complex Manual Setup:** Cấu hình thủ công port mapping và sửa code để chạy integration test cục bộ có thể tạo ra sai khác giữa môi trường local và cloud.
-* **Limited Service Integration Debugging:** Việc khắc phục sự cố Lambda tương tác với dịch vụ AWS khác (như DynamoDB hoặc Amazon SQS) truyền thống đòi hỏi cấu hình thủ công phức tạp, kéo dài thời gian xử lý lỗi.
-
----
-## Quy trình thiết lập tự động
-
-Extension LocalStack cho VS Code có thể cài trực tiếp từ AWS Toolkit, cung cấp một wizard thông minh cho quy trình thiết lập tinh gọn. Wizard tự phát hiện LocalStack đã được cấu hình chưa và hướng dẫn người dùng qua các bước. Nó cũng xử lý authentication bằng luồng duyệt web và lưu trữ token an toàn. Thêm nữa, wizard kiểm tra và tạo các AWS CLI profile cần thiết cho LocalStack, giúp developer dễ dàng chuyển đổi giữa môi trường local và cloud.
-
-![First](https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2025/09/12/ComputeBlog-2372-image-4.gif)
+**Tác giả:** Arushi Garg và Matthew Russo  
+**Ngày đăng:** 14/08/2025  
+**Chuyên mục:** Advanced (300), Amazon Simple Storage Service (S3), Storage, Technical How-to
 
 ---
 
-## Kiểm thử một ứng dụng serverless
+Log rotation là một thực tiễn vận hành tiêu chuẩn để duy trì system health và hiệu năng, đồng thời quản lý storage costs hiệu quả. Thực tiễn này bao gồm việc lưu trữ có hệ thống các log files để ngăn chúng chiếm dụng quá nhiều storage. Khi một log file đạt đến một dung lượng hoặc độ tuổi nhất định, nó sẽ được rotated — nghĩa là file hiện tại được lưu trữ với một tên mới và một log file mới được tạo để tiếp tục ghi lại các sự kiện mới. Quy trình này giúp duy trì hiệu năng hệ thống yêu cầu và tận dụng storage hiệu quả, đồng thời làm cho log data dễ quản lý và phân tích hơn. Vì các applications liên tục tạo ra log data, các tổ chức cần những storage solutions có khả năng xử lý frequent writes và updates vào log data với hiệu năng cao ổn định, đồng thời tối ưu hóa chi phí lưu trữ.
 
-Bài viết minh họa các khả năng này qua ví dụ thực tế: hệ thống xử lý đơn hàng event-driven dùng API Gateway, Amazon SQS, Lambda và Amazon Simple Notification Service (Amazon SNS).
+Amazon S3 Express One Zone là một high-performance, single-Availability Zone storage class được xây dựng đặc biệt cho most frequently accessed data và các latency-sensitive applications. Vào năm 2024, S3 Express One Zone đã bổ sung tính năng append data trực tiếp vào existing objects. Với tính năng này, bạn có thể append data directly to existing objects mà không cần phải download đối tượng, nối dữ liệu mới cục bộ rồi upload lại toàn bộ đối tượng. Điều này cho phép bạn cấu hình applications để ghi log trực tiếp vào S3 Express One Zone mà không cần local storage.
 
-![Second](/images/Blog3img1.png)
+Vào tháng 6/2025, S3 Express One Zone cũng bổ sung hỗ trợ renaming objects với RenameObject API mới. Lần đầu tiên trong Amazon S3, bạn có thể rename các existing objects một cách atomic (chỉ với một thao tác duy nhất) mà không cần di chuyển dữ liệu. API mới này đặc biệt hữu ích cho log rotation vì giờ đây bạn có thể atomically rename các log files của mình trong S3 Express One Zone thay vì phải rename cục bộ, upload lại file đã đổi tên rồi delete file gốc.
 
-Với tích hợp mới, toàn bộ workflow có thể được kiểm thử cục bộ:
-* **Deploy Locally:** Ứng dụng AWS SAM được deploy vào môi trường LocalStack local qua LocalStack AWS profile.
-![Third](https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2025/09/13/ComputeBlog-2372-build-deploy-3.gif)
-* **Debug Locally:** Developer đặt breakpoint trong mã Lambda trực tiếp trong VS Code và dùng debugger tích hợp để step qua thực thi khi nó tương tác với các dịch vụ giả lập cục bộ khác.
-![Fourth](https://d2908q01vomqb2.cloudfront.net/1b6453892473a467d07372d45eb05abc2031647a/2025/09/13/ComputeBlog-2372-debug-2.gif)
-* **Validate End-to-End:** Hoàn chỉnh workflow, từ ingestion message tại API Gateway tới notification cuối cùng từ Amazon SNS, có thể test để xác nhận mọi integration hoạt động đúng trước khi deploy lên cloud.
-
-> Để biết thông tin kỹ thuật chi tiết về tích hợp LocalStack này, hãy tham khảo video trên youtube này.
-
-{{< youtube e2mokcAzDCY >}}
+Trong blog post này, chúng tôi sẽ minh họa một chiến lược log rotation sử dụng S3 Express One Zone. Chúng tôi sẽ đề cập đến việc sử dụng chức năng append để ghi thêm log entries mới vào cuối các log files hiện có, cũng như sử dụng RenameObject API để atomically rename log file của bạn cho mục đích rotation. Ngoài ra, chúng tôi cũng chỉ cho bạn cách sử dụng Mountpoint for Amazon S3 để mount S3 directory bucket trong S3 Express One Zone storage class như một local filesystem. Mountpoint giúp các applications sử dụng standard logging framework như Log4j2 dễ dàng tận dụng những khả năng mới này trong S3 Express One Zone.
 
 ---
 
-## Best Practices cho kiểm thử cục bộ
+## Solution overview
 
-Để tận dụng tối đa workflow mới, bài viết khuyến nghị cách tiếp cận phân lớp và chiến lược. Bắt đầu với unit test nhanh, độc lập để xác nhận core logic, rồi mở rộng dần sang integration và system-level validation.
+Trong giải pháp này, bạn cấu hình Log4j2, một logging framework phổ biến cho ngôn ngữ lập trình Java, để ghi logs trực tiếp vào một directory bucket trong S3 Express One Zone storage class. Bạn sẽ sử dụng Mountpoint để mount directory bucket như một local filesystem. Lưu ý rằng bạn cần Mountpoint version 1.19.0 hoặc mới hơn để có thể rename files bằng Mountpoint.
 
-Chiến lược kiểm thử đề xuất gồm bốn bước chính:
-1. Bắt đầu với unit test cục bộ tập trung vào logic hàm độc lập.
-2. Chuyển sang integration test cục bộ dùng LocalStack để xác nhận tương tác giữa các dịch vụ AWS.
-3. Sau khi validation cục bộ xong, kiểm thử trong môi trường AWS thật để lộ các vấn đề không thể giả lập (ví dụ: sai lệch IAM permissions hoặc thách thức networking VPC).
-4. Cuối cùng, thực hiện performance & load test trên AWS để đánh giá ứng dụng xử lý traffic thực tế.
+Khi Log4j2 ghi thêm (append) các log entries vào filesystem, bạn sẽ thấy rằng Mountpoint gửi append requests đến S3 Express One Zone. Bạn cũng sẽ cấu hình Log4j2 để rotate log files dựa trên một specific time period hoặc một size limit. Khi các log files này được rotated, bạn sẽ thấy Mountpoint dịch các thao tác rename log files thành RenameObject API calls đến S3 Express One Zone.
 
 ---
 
-## Khi nào dùng kiểm thử cục bộ so với trên cloud
+## Solution walkthrough
 
-Mặc dù kiểm thử cục bộ mang lại lợi thế về tốc độ và chi phí, cần hiểu giới hạn và biết khi nào phải test trên cloud. Bảng sau liệt kê các kịch bản sử dụng tiềm năng cho mỗi chiến lược.
+Để triển khai một logging solution với S3 Express One Zone, bạn cần thực hiện bốn bước:
 
-| Testing Scenario                        | Local Testing | Cloud Testing | Reason                                                  |
-|-----------------------------------------|--------------|---------------|---------------------------------------------------------|
-| Function logic validation               | ✓            |               | Fast feedback for core business logic                   |
-| Service integration testing             | ✓            |               | Quick validation of AWS service interactions            |
-| Rapid iteration during development      | ✓            |               | Immediate feedback without deployment overhead          |
-| Cost-sensitive development environments | ✓            |               | Minimizes cloud resource costs during development       |
-| Offline development scenarios           | ✓            |               | No internet connectivity required                       |
-| Performance and scalability testing     |              | ✓             | Requires actual AWS infrastructure for accurate results |
-| IAM permission validation               |              | ✓             | LocalStack doesn't fully replicate IAM behavior         |
-| VPC networking scenarios                |              | ✓             | Network configurations can't be accurately emulated     |
-| Production-like load testing            |              | ✓             | Real performance metrics only available in AWS          |
-| Final validation before deployment      |              | ✓             | Supports compatibility with actual AWS environment      |
+1. Tạo các AWS resources cần thiết, chẳng hạn như directory bucket, IAM role, và một EC2 instance.
+2. Chuẩn bị môi trường làm việc bằng cách tải về các dependencies như Mountpoint và Maven, công cụ dùng để build và chạy một Java application.
+3. Viết một Java application sử dụng Log4j2 để ghi logs và rotate log files.
+4. Chạy application và giám sát logs.
 
+### Bước 1: Tạo các tài nguyên AWS cần thiết
+
+- Tạo một directory bucket. Ví dụ: `logging-on-express--usw2-az3--x-s3`.
+- Tạo IAM role cho EC2 instance:
+  - Trusted entity: AWS service → EC2
+  - IAM role name: `logging-on-express`
+- Tạo inline policy để cho phép S3 Express One Zone thực hiện API `CreateSession`:
+  - Policy name: `express-create-session`
+- Khởi chạy EC2 instance:
+  - AMI: Amazon Linux 2023
+  - Instance type: `t3.micro`
+  - Storage: 24 GiB gp3 EBS
+  - Subnet trong cùng AZ với bucket
+  - IAM instance profile: `logging-on-express`
+
+### Bước 2: Chuẩn bị workspace
+
+- Kết nối EC2 instance, cài Mountpoint và Maven.
+- Kiểm tra Mountpoint version:
+
+```bash
+$ mount-s3 --version
+mount-s3 1.19.0
+```
+
+````
+
+- Tạo thư mục logging:
+
+```bash
+$ cd $HOME
+$ mkdir logging-on-express
+$ cd logging-on-express/
+$ mkdir logs
+```
+
+- Mount directory bucket bằng `/etc/fstab`:
+
+```bash
+$ export MNT_PATH="$HOME/logging-on-express/logs"
+$ export BUCKET_NAME="logging-on-express--usw2-az3--x-s3"
+$ echo "s3://$BUCKET_NAME $MNT_PATH mount-s3 _netdev,nosuid,nodev,rw,incremental-upload,write-part-size=8388608,allow-other,uid=$(id -u $(whoami)),gid=$(id -g $(whoami)) 0 0" | sudo tee -a /etc/fstab
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart "$(systemd-escape --suffix=mount --path $MNT_PATH)"
+$ sudo systemctl status "$(systemd-escape --suffix=mount --path $MNT_PATH)"
+$ sudo df -h
+```
+
+### Bước 3: Viết ứng dụng Java để logging
+
+- Tạo `pom.xml` với dependency Log4j2.
+- Cấu hình `log4j2.xml`:
+
+```xml
+<Configuration status="WARN">
+    <Properties>
+        <Property name="LOG_DIR">logs</Property>
+        <Property name="MAX_FILE_SIZE">10GB</Property>
+        <Property name="FILE_PATTERN">${LOG_DIR}/app-%d{yyyy-MM-dd-HH-mm}-%i.log</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <RollingFile name="RollingFile"
+                     fileName="${LOG_DIR}/app.log"
+                     filePattern="${FILE_PATTERN}">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="${MAX_FILE_SIZE}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="nomax"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
+```
+
+- Chương trình Java `LoggingApp.java`:
+
+```java
+package com.example;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
+
+public class LoggingApp {
+    private static final Logger logger = LogManager.getLogger(LoggingApp.class);
+    private static final int NUM_THREADS = 50;
+    private static final int LOG_INTERVAL_MS = 1;
+    private static final AtomicLong counter = new AtomicLong(0);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(NUM_THREADS);
+
+    public static void main(String[] args) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(5, TimeUnit.SECONDS)) executor.shutdownNow();
+            } catch (InterruptedException e) { executor.shutdownNow(); }
+        }));
+
+        for (int i = 0; i < NUM_THREADS; i++) {
+            final int threadId = i;
+            executor.submit(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    long count = counter.incrementAndGet();
+                    logger.info("Thread {} - Log #{}", threadId, count);
+                    Thread.sleep(LOG_INTERVAL_MS);
+                }
+                return null;
+            });
+        }
+
+        while (true) {}
+    }
+}
+```
+
+### Bước 4: Chạy ứng dụng và giám sát logs
+
+```bash
+$ mvn clean package
+$ java -jar target/logging-on-express-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+- Logs sẽ được ghi vào `app.log`.
+- Mỗi phút hoặc sau 10GB, file log sẽ được rename atomic bằng `RenameObject API`.
+- Quan sát data events trong CloudTrail để xem các request `PutObject` và `RenameObject`.
 
 ---
 
-## Kết luận
+## Clean up
 
-Việc tích hợp LocalStack vào AWS Toolkit for VS Code nâng cao đáng kể trải nghiệm phát triển cục bộ cho ứng dụng serverless. Bằng cách cho phép developer chạy và debug các ứng dụng đa dịch vụ phức tạp ngay trong IDE, khả năng mới này giúp giảm chuyển ngữ cảnh, phát hiện lỗi sớm hơn và hạ chi phí phát triển. Điều này dẫn tới chu kỳ kiểm thử nhanh hơn và triển khai chất lượng cao hơn, đồng thời vẫn giữ developer kiểm soát đầy đủ môi trường cục bộ.
+- Terminate EC2 instance.
+- Xóa S3 directory bucket.
+
+---
+
+## Conclusion
+
+- Bạn đã học cách xây dựng giải pháp xoay vòng log sử dụng S3 Express One Zone.
+- Sử dụng Log4j2 + Mountpoint cho phép ghi log trực tiếp lên S3 mà không cần local storage.
+- Có thể mở rộng cho các công cụ logging khác.
+
+---
+
+### TAGS
+
+Amazon S3 Express One Zone, Amazon Simple Storage Service (Amazon S3), AWS Cloud Storage
+
+---
+
+### Authors
+
+**Arushi Garg**
+Product Manager tại Amazon S3. Cô thích tìm hiểu các vấn đề của khách hàng và sáng tạo giải pháp để giải quyết chúng. Ngoài công việc, cô thích hát khi chơi ukulele và luôn tìm kiếm cơ hội du lịch.
+
+**Matthew Russo**
+Senior Software Development Engineer tại AWS, làm việc trong nhóm S3 Express One Zone.
+
+```
+
+```
+````

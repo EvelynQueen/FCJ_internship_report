@@ -1,335 +1,218 @@
 ---
-title: "Blog 2"
-date: "`r Sys.Date()`"
+title: "Effectively building AI agents on AWS Serverless"
+date: "2025-08-14"
 weight: 1
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
 
+## AWS Compute Blog
 
-# Create an SSL connection to Amazon RDS for Db2 in Java without KeyStore or Keytool
+# Effectively building AI agents on AWS Serverless
 
-> by Vikram Khatri, Amine Yahsine, Ashish Saraswat, and Sumit Kumar
+> by Anton Aleksandrov and Dhiraj Mahapatro on 14 AUG 2025 in Advanced (300), Amazon API Gateway, Amazon Bedrock, AWS Lambda, Generative AI, Serverless, Technical How-to
 
-This article outlines a simplified method for establishing a secure SSL database connection in Java, specifically for Amazon Relational Database Service (Amazon RDS) for Db2. The approach allows developers to bypass the traditional complexities associated with the `keytool` utility and the management of Java KeyStores. The primary benefits of this technique include its simplicity, its suitability for automated environments like CI/CD pipelines, and its ability to maintain strong security through proper TLS 1.2 negotiation and server certificate validation.
+Imagine an AI assistant that doesn’t just respond to prompts – it reasons through goals, acts, and integrates with real-time systems. This is the promise of agentic AI.
 
----
+According to Gartner, by 2028 over 33% of enterprise applications will embed agentic capabilities – up from less than 1% today. While early generative AI efforts focused on GPUs and model training, agentic systems shift the focus to CPUs, orchestration, and integration with live data – the places where organizations are starting to see real return on investment (ROI).
 
-## Solution Overview
+In this post, you’ll learn how to build and run serverless AI agents on AWS using services such as Amazon Bedrock AgentCore (preview as of this post publication), AWS Lambda, and Amazon Elastic Container Service (Amazon ECS), which provide scalable compute foundations for agentic workloads. You’ll also explore architectural patterns, state management, identity, observability, and tool usage to support production-ready deployments.
 
-Instead of relying on a traditional Java TrustStore, this solution leverages a specific configuration property supported by the IBM JDBC driver. The driver can be instructed to use a PEM-formatted server certificate directly, which eliminates the need to convert the certificate or import it into a `.jks` file.
+## Overview
 
-This is accomplished by setting the `sslCertLocation` property:
+Early AI assistants were stateless and reactive – each prompt processed in isolation, with no memory of prior interactions or awareness of broader context. Gradually, AI assistants became more capable by injecting system prompts, preserving conversation history, and incorporating enterprise knowledge using Retrieval-Augmented Generation (RAG).
 
-```java
-properties.put("sslCertLocation", "/path/to/certchain.pem");
+Despite these improvements, traditional AI assistants still lacked true autonomy. They couldn’t reason through multi-step goals, make decisions on their own, or adjust workflows dynamically based on outcomes. As a result, they worked well for simpler Q&A or predefined workflows, but struggled with dynamic, more complex, real-world tasks that require planning, using external tools, and making decisions along the way.
+
+Agentic AI systems shift from passive content generation to autonomous, goal-driven behavior. Powered by Large Language Models (LLMs) and enhanced with memory, planning, and tool use, these systems can break down complex tasks into smaller steps, reason through each step, and take real-time actions, such as calling APIs, executing tools, or interacting with live data. By referencing the LLM within a control cycle that manages context, memory, and decision-making, these systems can choose the right tools, adapt workflows, and integrate deeply into enterprise environments, with use cases ranging from travel booking and financial analysis to DevOps automation and code debugging. This is referred to as an agentic loop.
+
+While agentic loop is a lightweight approach to structuring these systems, other control flow paradigms, such as graph, swarm, and workflows, are also available in open-source frameworks like LangGraph.
+
+## Introducing Strands Agents SDK
+
+Strands Agents SDK is a code-first framework to build production-ready AI agents with minimal boilerplate. It utilizes the above-mentioned agentic loop system and abstracts common challenges like memory management, tool integration, and multi-step reasoning in a lightweight, modular Python framework. Strands SDK handles state, tool orchestration, and multi-step reasoning so agents can remember past conversations, call external APIs, enforce business rules, and adapt to changing inputs. This allows you to focus on the application’s business logic.
+
+Because agents built with Strands SDK are essentially Python apps, they’re portable and can run across different compute options, such as Bedrock AgentCore Runtime, Lambda functions, ECS tasks, or even locally. This makes Strands Agents SDK a powerful foundation for building scalable and goal-driven AI systems. The following sections assume you’re running your AI agents built with Strands Agents SDK on Lambda functions.
+
+## Building your first serverless AI agent
+
+Imagine you’re building an AI-powered corporate travel assistant on AWS, and you have the following technical requirements:
+
+- Define the system prompts, memory, and model you want to use
+- Integrate tools for API calls, business logic, and knowledge bases
+- Ensure authentication and observability
+
+Strands SDK handles heavy lifting, so you can focus on building smart, responsive agents with minimal overhead. The following code snippet creates a simple agent:
+
+```python
+from strands import Agent
+
+agent = Agent(
+    system_prompt="""
+You're a travel assistant that helps
+employees book business trips
+according to policy.""",
+    model=my_model,
+    tools=[get_policies, get_hotels, get_cars, book_travel]
+)
+
+response = agent("Book me a flight to NYC next Monday.")
 ```
 
-To ensure the connection is encrypted and uses a secure protocol, the following JDBC driver connection properties must also be set:
+## Session state management
 
-```java
-sslConnection=true
-sslVersion=TLSv1.2
+Session state management is critical for agentic workflows. It allows agents to track goals across interactions – enabling coherent conversations, retaining context, and providing personalized experiences. Without state management, each prompt is handled in isolation, making it impossible for the agent to reference prior context or track ongoing tasks. In cloud environments, the solution is to externalize session state to persistent storage, such as Amazon Simple Storage Service (Amazon S3).
+
+```python
+session_manager = S3SessionManager(
+    session_id=f"session_for_user_{user.id}",
+    bucket=SESSION_STORE_BUCKET_NAME,
+    prefix="agent_sessions"
+)
+
+agent = Agent(
+    session_manager=session_manager
+)
 ```
 
-This method is particularly well-suited for cloud environments like AWS, where Amazon RDS provides a PEM-formatted certificate bundle. The solution was tested with an IBM Db2 JDBC Driver (`db2jcc4.jar` v4.33.31), Java 11+, and a PEM certificate from Amazon RDS.
+## Authentication and authorization
 
----
+For enterprise AI agents to operate safely, they must know who the user is and what they are allowed to do. This goes beyond basic identity validation – AI agents often act on behalf of users, so they might need to enforce role-based access controls, support audit, and comply with corporate policies.
 
-## Prerequisites
+AWS services like Amazon Cognito, Amazon Identity and Access Management (IAM), and Amazon API Gateway provide a solid foundation for authentication and authorization. After authentication and authorization, the agent can extract identity context from a JSON Web Token (JWT) to personalize prompts and enforce rules.
 
-Before implementing this solution, the following resources are assumed to be in place:
-- An Amazon RDS for Db2 server instance with SSL already enabled.
-- A certificate chain PEM file, such as the region-specific `us-east-1-bundle.pem` available for download from AWS.
-- A recent version of the IBM Data Server Driver (`db2jcc4.jar` version 4.33 or later).
-- Java 8 or higher, with support for TLS 1.2.
+```python
+def handler(event: dict, ctx):
+    user_id = extract_user_id(event["headers"]["Authorization"])
+    user_prompt: dict = json.loads(event["body"])["prompt"]
+    agent_response = agent.prompt(user_id, user_prompt)
 
----
-
-## The Java Program
-
-The full source code for a Java program (`Db2SSLTest.java`) that connects to Amazon RDS for Db2 using this SSL method is provided below:
-```java
-import java.sql.*;
-import java.util.Properties;
-public class Db2SSLTest {
-  public static void main(String[] args) {
-    if (args.length != 6) {
-      System.out.println("Usage: java Db2SSLTest " +
-        " <certchain.pem> " +
-        "  <hostname> <port> <database> <userid> <password>");
-      System.exit(1);
+    return {
+        "statusCode": 200,
+        "body": json.dumps({"text": agent_response.text})
     }
-    Properties properties = new Properties();
-    String certPath = args[0];
-    String hostname = args[1];
-    String port = args[2];
-    String database = args[3];
-    String userid = args[4];
-    String password = args[5];
-    properties.put("sslConnection", "true");
-    properties.put("sslVersion", "TLSv1.2");
-    properties.put("sslCertLocation", certPath);
-    properties.put("user", userid);
-    properties.put("password", password); 
-    String url = "jdbc:db2://" + hostname + ":" + 
-        port + "/" + database;
-    try {
-      Class.forName("com.ibm.db2.jcc.DB2Driver");
-      Connection conn = DriverManager.getConnection(url, 
-                          properties);
-      Statement stmt = conn.createStatement();
-      ResultSet rs = stmt.executeQuery("SELECT CURRENT " +
-          " TIMESTAMP " +
-          " FROM SYSIBM.SYSDUMMY1");
-      if (rs.next()) {
-        System.out.println("SSL Connection successful!");
-        System.out.println("Current timestamp: " + 
-           rs.getString(1));
-      }
-      rs.close();
-      stmt.close();
-      conn.close();
-    } catch (Exception e) {
-      System.err.println("Error: " + e.getMessage());
-      e.printStackTrace();
+```
+
+## Building portable Strands agents on AWS
+
+Strands Agents SDK is compute-agnostic. Agents can run on Lambda, ECS, AgentCore Runtime, or locally. Separate your business logic from the interface layer for portability.
+
+### Lambda handler code:
+
+```python
+def handler(event: dict, ctx):
+    user_id = extract_user_id(event)
+    user_prompt = json.loads(event["body"])["prompt"]
+    agent_response = call_agent(user_id, user_prompt)
+    return {
+        "statusCode":200,
+        "body": json.dumps({"text": agent_response.mesage})
     }
-  }
+```
+
+### AgentCore code:
+
+```python
+@app.entrypoint
+def invoke(payload):
+    user_id = extract_user_id(payload)
+    user_prompt = payload.get("prompt")
+    agent_response = call_agent(user_id, user_prompt)
+    return {"result": agent_response.message}
+```
+
+### HTTP Handler code:
+
+```python
+@app.post("/prompt")
+async def prompt(request: Request, prompt_request: PromptRequest):
+    user_id=extract_user_id(request)
+    user_prompt = prompt_request.prompt
+    agent_response = call_agent(user_id, user_prompt)
+    return {"text": agent_response.message}
+```
+
+### Local testing code:
+
+```python
+if __name__ == "__main__":
+    user_id="local-testing-user"
+    user_prompt="book me a trip to NYC"
+    agent_response = call_agent(user_id, user_prompt)
+    return agent_response.message
+```
+
+### Agent code:
+
+```python
+def call_agent(user_id, user_prompt):
+    agent = Agent(
+        system_prompt="You’re a travel agent…",
+        model=my_model,
+        session_manager = my_session_manager,
+    )
+    agent_response = agent(user_prompt)
+    return agent_response
+```
+
+## Extending agent functionality with tools
+
+```python
+from strands import tool
+
+@tool
+def get_weather(city: str) -> str:
+    weather = call_weather_api(city)
+    return f"The current weather in {city} is {weather}"
+```
+
+## Integrating with remote MCP servers
+
+```python
+mcp_client = MCPClient(lambda: streamablehttp_client(
+    url=mcp_endpoint,
+    headers={"Authorization": f"Bearer {token}"},
+))
+
+with mcp_client:
+  tools = mcp_client.list_tools_sync()
+  agent = Agent(tools=tools)
+```
+
+## Monitoring and observability
+
+```json
+{
+  "accumulated_usage": {
+    "inputTokens": 1539,
+    "outputTokens": 122,
+    "totalTokens": 1661
+  },
+  "average_cycle_time": 0.881234884262085,
+  "total_cycles": 2,
+  "total_duration": 1.881234884262085
 }
 ```
 
----
+## Security considerations
 
-## Compile and Run
+- Encrypt all client-server interactions with TLS
+- Validate tool access through fine-grained authorization
+- Deploy MCP behind API Gateway for additional security layers
+- Follow AWS Well-Architected Framework Security Pillar best practices
 
-Assuming the IBM JDBC driver is located at `~/sqllib/java/db2jcc4.jar`, the following shell script illustrates how to compile and run the Java program. The script also includes a function to retrieve the database password from AWS Secrets Manager or prompt the user for it manually.
+## Sample project
 
-```bash
-#!/usr/bin/env bash
-# Retrieves the master user password for a specified DB instance.
-# This function attempts to obtain the master user password for the provided
-# DB instance ID. It first checks if the password can be retrieved from the
-# AWS Secrets Manager. If a valid secret is not found, it prompts the user
-# to manually enter the password.
-#
-# Args:
-#     DB_INSTANCE_ID (str): The database instance identifier.
-#
-# Environment Variables:
-#     REGION: The AWS region where the DB instance is located.
-#
-# Exports:
-#     MASTER_USER_PASSWORD: The retrieved or entered master user password.
-#
-# Returns:
-#     int: Returns 1 if the password retrieval fails, otherwise 0.
-get_master_password() {
- DB_INSTANCE_ID=$1
- SECRET_ARN=$(aws rds describe-db-instances \
- --db-instance-identifier "$DB_INSTANCE_ID" \
- --region $REGION \
- --query "DBInstances[0].MasterUserSecret.SecretArn" \
- --output text)
- if [[ -z "$SECRET_ARN" || "$SECRET_ARN" == "None" ]]; then
-   read -rsp "Enter Master User password: " MASTER_USER_PASSWORD
-   echo
- else
-   SECRET_JSON=$(aws secretsmanager get-secret-value \
-     --secret-id "$SECRET_ARN" \
-     --query "SecretString" \
-     --region $REGION \
-     --output text)
-   MASTER_USER_PASSWORD=$(jq -r '.password' <<< "$SECRET_JSON")
-   if [[ -z "$MASTER_USER_PASSWORD" ]]; then
-     echo "Failed to get password from secret manager '$SECRET_ARN'. Exiting..."
-     return 1
-   fi
-   export MASTER_USER_PASSWORD=$MASTER_USER_PASSWORD
- fi
-}
-# Retrieves the master user name for a specified DB instance.
-#
-# This function queries AWS RDS to obtain the master user name for the provided
-# DB instance identifier. If the master user name is not found, it returns an
-# error message.
-#
-# Environment Variables:
-#     DB_INSTANCE_IDENTIFIER: The database instance identifier.
-#     REGION: The AWS region where the DB instance is located.
-#
-# Exports:
-#     MASTER_USER_NAME: The retrieved master user name.
-#
-# Returns:
-#     int: Returns 1 if the master user name is not found, otherwise 0.
-get_master_user_name() {
- local master_user_name=($(aws rds describe-db-instances \
-   --db-instance-identifier "$DB_INSTANCE_IDENTIFIER" \
-   --region $REGION \
-   --query "DBInstances[0].MasterUsername" \
-   --output text))
- if [ "$master_user_name" = "None" ]; then
-   echo "Not found"
-   return 1
- else
-   export MASTER_USER_NAME=$master_user_name
- fi
-}
-# Retrieves the database address for a specified DB instance.
-#
-# This function queries AWS RDS to obtain the database endpoint address for the
-# provided DB instance identifier. If the address is not found, it returns an
-# error message.
-#
-# Environment Variables:
-#     DB_INSTANCE_IDENTIFIER: The database instance identifier.
-#     REGION: The AWS region where the DB instance is located.
-#
-# Exports:
-#     DB_ADDRESS: The retrieved database endpoint address.
-#
-# Returns:
-#     int: Returns 1 if the database address is not found, otherwise 0.
-get_db_address() {
- local db_address=($(aws rds describe-db-instances \
-   --db-instance-identifier "$DB_INSTANCE_IDENTIFIER" \
-   --region $REGION \
-   --query "DBInstances[0].Endpoint.Address" \
-   --output text))
- if [ -z "$db_address" ]; then
-   echo "Not found"
-   return 1
- else
-   export DB_ADDRESS=$db_address
- fi
-}
-# Retrieves the SSL port number for a specified DB instance.
-#
-# This function queries AWS RDS to obtain the parameter group name associated
-# with the provided DB instance identifier, and then queries the parameter
-# group to obtain the SSL port number. If the SSL port is not found, it returns
-# an error message.
-#
-# Environment Variables:
-#     DB_INSTANCE_IDENTIFIER: The database instance identifier.
-#     REGION: The AWS region where the DB instance is located.
-#
-# Exports:
-#     SSL_PORT: The retrieved SSL port number.
-#
-# Returns:
-#     int: Returns 1 if the SSL port is not found, otherwise 0.
-get_ssl_port() {
- SSL_PORT=""
- DB_PARAM_GROUP_NAME=$(aws rds describe-db-instances \
-     --db-instance-identifier "$DB_INSTANCE_IDENTIFIER" \
-     --region $REGION \
-     --query "DBInstances[0].DBParameterGroups[0].DBParameterGroupName" \
-     --output text)
- if [ "$DB_PARAM_GROUP_NAME" != "" ]; then
-   SSL_PORT=$(aws rds describe-db-parameters \
-       --db-parameter-group-name "$DB_PARAM_GROUP_NAME" \
-       --region $REGION \
-       --query "Parameters[?ParameterName=='ssl_svcename'].ParameterValue" \
-       --output text)
-   if [ "$SSL_PORT" = "None" ]; then
-     SSL_PORT=""
-     return 1
-   fi
- fi
- export SSL_PORT=$SSL_PORT
- return 0
-}
-# Main entry point for the script.
-#
-# This function compiles a Java program, downloads the SSL certificate, retrieves
-# the master user name, master password, database address, and SSL port from AWS
-# RDS, and then runs the Java program with the retrieved parameters.
-#
-# Exports:
-#     None
-#
-# Returns:
-#     int: Returns 0 if the program runs successfully, otherwise 1.
-main () {
- DB_INSTANCE_IDENTIFIER="viz-demo"
- CL_PATH=.:$HOME/sqllib/java/db2jcc4.jar
- REGION="us-east-1"
- PROG_NAME=Db2SSLTest
- JAVA_FILE=${PROG_NAME}.java
- DBNAME="TEST"
- if ! command -v javac &>/dev/null; then
-   echo "javac is not installed. Please install Java Development Kit (JDK) to compile Java programs."
-   exit 1
- fi
- echo "Compile Java program $JAVA_FILE"
- javac -cp $CL_PATH $JAVA_FILE
- echo "Downloading SSL certificate..."
- CERTCHAIN="/home/db2inst1/us-east-1-bundle.pem"
- if [ -f "$CERTCHAIN" ]; then
-   echo "Certificate already exists. Skipping download."
- else
-   echo "Certificate does not exist. Downloading..."
-   if ! curl -sL "https://truststore.pki.rds.amazonaws.com/us-east-1/$REGION-bundle.pem" -o $REGION-bundle.pem; then
-     echo "Failed to download SSL certificate. Please check your network connection or the URL."
-     exit 1
-   fi
- fi
- if get_master_user_name "$DB_INSTANCE_IDENTIFIER"; then
-   echo "Master user name: $MASTER_USER_NAME"
-   USER="$MASTER_USER_NAME"
- else
-   echo "Failed to retrieve master user name. Exiting..."
-   exit 1
- fi
- if get_master_password "$DB_INSTANCE_IDENTIFIER"; then
-   PASSWORD=$MASTER_USER_PASSWORD
- else
-   echo "Failed to retrieve master password. Exiting..."
-   exit 1
- fi
- if get_db_address "$DB_INSTANCE_IDENTIFIER"; then
-   echo "DB Address: $DB_ADDRESS"
-   HOST="$DB_ADDRESS"
- else
-   echo "Failed to retrieve DB address. Exiting..."
-   exit 1
- fi
- if get_ssl_port "$DB_INSTANCE_IDENTIFIER"; then
-   echo "SSL Port: $SSL_PORT"
-   PORT="$SSL_PORT"
- else
-   echo "Failed to retrieve SSL port. Exiting..."
-   exit 1
- fi
- # Use -Djavax.net.debug=ssl:handshake:verbose to debug SSL issues
- echo "Running Java program..."
- java \
- -cp "$CL_PATH" $PROG_NAME $CERTCHAIN $HOST $PORT $DBNAME $USER $PASSWORD
-}
-main "$@"
-
-```
-
----
-
-## Considerations
-
-There is a limitation in the JDBC driver (at the time of writing) that prevents the use of a global certificate bundle (like `global-bundle.pem`) with the `sslCertLocation` property. If an application connects to a single AWS Region, it is recommended to use a region-specific certificate file (e.g., `us-east-1-bundle.pem`). If there is an absolute requirement to use the global bundle, developers must revert to the traditional method of using `keytool` to store the certificates in a keystore.
-
----
-
-## Troubleshooting
-
-The following are solutions to common issues:
-* **Failing SSL connection:** If the SSL connection fails after being enabled in the RDS for Db2 instance, the instance must be restarted. The SSL enablement only takes effect after a restart.
-* **Unable to locate the `db2jcc4.jar` file:** This file is included with various IBM DB2 client packages, such as the data server client or runtime client.
-* **Unable to connect to the RDS database:** If a connection fails after cataloging a database with SSL using `db2cli` commands, there might be an existing database connection that is not aware of the newly cataloged database. The `db2 terminate` command should be used to close existing connections before testing again.
-
-
----
+Follow instructions in this [GitHub repo](https://github.com/aws-samples/sample-serverless-mcp-servers/tree/main/strands-agent-on-lambda) to deploy a sample project implementing the practices described in this post using the [AWS Serverless](https://aws.amazon.com/serverless/) compute. The repo includes a travel agent implemented with Strands Agents SDK and a remote MCP server, both running as Lambda functions.
 
 ## Conclusion
 
-This post demonstrates that it is not always necessary to use the Java KeyStore or `keytool` utility to enable SSL connections. With a PEM certificate and a modern JDBC driver, a secure connection can be established with minimal setup. This approach is especially valuable for developers who need to perform rapid SSL testing, for automated environments such as CI/CD and containers, and for anyone looking to simplify secure Java-to-Db2 connectivity.
+Agentic AI enables dynamic, goal-driven workflows. By externalizing state, integrating authentication, and adding observability, agents operate securely at scale.
 
+## Useful resources
+
+- [Strands Agents SDK Docs](https://strandsagents.com/latest/)
+- [Amazon Bedrock AgentCore User guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html)
+- [MCP Protocol Specification](https://modelcontextprotocol.io/specification/versioning)
+- [Sample Serverless MCP Servers](https://github.com/aws-samples/sample-serverless-mcp-servers)
+- [Serverless Land](https://www.serverlessland.com/)

@@ -7,7 +7,7 @@ pre: " <b> 6. </b> "
 ---
 
 During my internship at **[Company/Organization Name]** from **[start date]** to **[end date]**, I had the chance to apply the knowledge learned in school to actual working situations.  
-I was involved in **[brief description of the main project or assignment]**, which helped me sharpen my abilities in **[list of skills: programming, analysis, documentation, communication, etc.]**.
+I was involved in **[brief description of the main project or assignment]**, which helped me sharpen my abilities in **[list of skills: programming, analysis, documentation, communication, etc..]**.
 
 Regarding work attitude, I consistently aimed to complete assigned tasks effectively, adhered to workplace policies, and collaborated with colleagues to contribute to overall productivity.
 

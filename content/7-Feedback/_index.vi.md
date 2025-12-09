@@ -1,6 +1,6 @@
 ---
 title: "Ý Kiến Chia Sẻ và Phản Hồi"
-date: "9999-12-31"
+date: "2025-12-1"
 weight: 7
 chapter: false
 pre: " <b> 7. </b> "

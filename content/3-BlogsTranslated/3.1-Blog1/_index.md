@@ -6,7 +6,7 @@ chapter: false
 pre: " <b> 3.1. </b> "
 ---
 
-# How Anuttacon scaled AI-enhanced gaming workloads for “Whispers from the Star”
+## How Anuttacon scaled AI-enhanced gaming workloads for “Whispers from the Star”
 
 > by Andrew (Qingjie) Ren, Ding Xiao, Nathan Winter, Qiang Li, and Qing Xing Liu on 14 AUG 2025 in Amazon Elastic Block Store (Amazon EBS), Customer Solutions, Games, Intermediate (200), Storage
 

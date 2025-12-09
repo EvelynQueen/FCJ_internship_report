@@ -1,14 +1,12 @@
 ---
-title: "Simplify log rotation with Amazon S3 Express One Zone"
+title: "AWS Storage Blog"
 date: "2025-08-14"
 weight: 1
 chapter: false
 pre: " <b> 3.3. </b> "
 ---
 
-## AWS Storage Blog
-
-# Simplify log rotation with Amazon S3 Express One Zone
+## Simplify log rotation with Amazon S3 Express One Zone
 
 **Tác giả:** Arushi Garg và Matthew Russo  
 **Ngày đăng:** 14/08/2025  

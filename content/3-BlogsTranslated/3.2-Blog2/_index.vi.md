@@ -6,7 +6,7 @@ chapter: false
 pre: " <b> 3.2. </b> "
 ---
 
-# Xây dựng hiệu quả AI agents trên AWS Serverless
+## Xây dựng hiệu quả AI agents trên AWS Serverless
 
 **Tác giả:** Anton Aleksandrov và Dhiraj Mahapatro
 **Ngày đăng:** 14/08/2025  

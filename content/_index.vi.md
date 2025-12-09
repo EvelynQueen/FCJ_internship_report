@@ -1,6 +1,6 @@
 ---
 title: "Báo cáo thực tập"
-date: "`r Sys.Date()`"
+date: "`2025-12-1"
 weight: 0
 chapter: false
 ---
@@ -27,7 +27,7 @@ chapter: false
 
 &emsp; **Thời gian thực tập:** Từ 09/2025 đến 12/2025
 
-![Ảnh đại diện của bạn](/images/myface.jpg)
+<img src="/images/myface.jpg" alt="Ảnh đại diện của bạn" width="150">
 
 ### Nội dung báo cáo
 

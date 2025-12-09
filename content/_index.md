@@ -1,6 +1,6 @@
 ---
 title: "Internship Report"
-date: "`r Sys.Date()`"
+date: "`2025-12-1"
 weight: 0
 chapter: false
 ---

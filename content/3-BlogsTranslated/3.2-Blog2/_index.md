@@ -6,7 +6,7 @@ chapter: false
 pre: " <b> 3.2. </b> "
 ---
 
-# Effectively building AI agents on AWS Serverless
+## Effectively building AI agents on AWS Serverless
 
 > by Anton Aleksandrov and Dhiraj Mahapatro on 14 AUG 2025 in Advanced (300), Amazon API Gateway, Amazon Bedrock, AWS Lambda, Generative AI, Serverless, Technical How-to
 

@@ -1,14 +1,12 @@
 ---
-title: "Simplify log rotation with Amazon S3 Express One Zone"
+title: "AWS Storage Blog"
 date: "2025-08-14"
 weight: 1
 chapter: false
 pre: " <b> 3.3. </b> "
 ---
 
-## AWS Storage Blog
-
-# Simplify log rotation with Amazon S3 Express One Zone
+## Simplify log rotation with Amazon S3 Express One Zone
 
 > Author : by Arushi Garg and Matthew Russo on 14 AUG 2025 in Advanced (300)  
 > Categories : Amazon Simple Storage Service (S3), Storage, Technical How-to Permalink Comments Share

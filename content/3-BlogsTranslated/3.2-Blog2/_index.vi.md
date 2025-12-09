@@ -1,12 +1,10 @@
 ---
-title: "AWS Compute Blog: Xây dựng hiệu quả AI agents trên AWS Serverless"
+title: "AWS Compute Blog"
 date: "2025-08-14"
 weight: 1
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
-
-## AWS Compute Blog
 
 # Xây dựng hiệu quả AI agents trên AWS Serverless
 

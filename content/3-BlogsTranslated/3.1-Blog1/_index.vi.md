@@ -1,12 +1,12 @@
 ---
-title: "Cách Anuttacon mở rộng khối lượng công việc game được nâng cao bởi AI cho “Whispers from the Star”"
+title: "AWS Storage Blog"
 date: "2025-08-14"
 weight: 1
 chapter: false
 pre: " <b> 3.1. </b> "
 ---
 
-### AWS Storage Blog
+# Cách Anuttacon mở rộng khối lượng công việc game được nâng cao bởi AI cho “Whispers from the Star”
 
 **Tác giả:** Andrew (Qingjie) Ren, Ding Xiao, Nathan Winter, Qiang Li, và Qing Xing Liu  
 **Ngày đăng:** 14/08/2025  

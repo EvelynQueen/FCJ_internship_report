@@ -1,12 +1,10 @@
 ---
-title: "Effectively building AI agents on AWS Serverless"
+title: "AWS Compute Blog"
 date: "2025-08-14"
 weight: 1
 chapter: false
 pre: " <b> 3.2. </b> "
 ---
-
-## AWS Compute Blog
 
 # Effectively building AI agents on AWS Serverless
 

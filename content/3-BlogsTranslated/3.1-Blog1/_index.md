@@ -1,12 +1,10 @@
 ---
-title: "How Anuttacon scaled AI-enhanced gaming workloads for “Whispers from the Star”"
+title: "AWS Storage Blog"
 date: "2025-08-14"
 weight: 1
 chapter: false
 pre: " <b> 3.1. </b> "
 ---
-
-## AWS Storage Blog
 
 # How Anuttacon scaled AI-enhanced gaming workloads for “Whispers from the Star”
 

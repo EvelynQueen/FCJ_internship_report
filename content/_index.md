@@ -27,7 +27,7 @@ chapter: false
 
 &emsp; **Internship Duration:** From 09/2025 to 12/2025
 
-<img src="/images/myface.jpg" alt="Ảnh đại diện của bạn" width="150">
+<img src="/images/myface.jpg" alt="Ảnh đại diện của bạn" width="300">
 
 ### Report Content
 

@@ -3,7 +3,7 @@ title: "Simplify log rotation with Amazon S3 Express One Zone"
 date: "2025-08-14"
 weight: 1
 chapter: false
-pre: " <b> 3.2. </b> "
+pre: " <b> 3.3. </b> "
 ---
 
 ## AWS Storage Blog

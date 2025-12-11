@@ -66,7 +66,6 @@ $ mount-s3 --version
 mount-s3 1.19.0
 ```
 
-````
 
 - Tạo thư mục logging:
 
@@ -207,7 +206,5 @@ Product Manager tại Amazon S3. Cô thích tìm hiểu các vấn đề của k
 **Matthew Russo**
 Senior Software Development Engineer tại AWS, làm việc trong nhóm S3 Express One Zone.
 
-```
 
-```
-````
+

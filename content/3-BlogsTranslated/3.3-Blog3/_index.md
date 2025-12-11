@@ -86,7 +86,7 @@ $ mount-s3 --version
 mount-s3 1.19.0
 ```
 
-````
+
 
 4. Create directories:
 
@@ -213,4 +213,4 @@ $ java -jar target/logging-on-express-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 - **Arushi Garg**: Product Manager, Amazon S3. Loves singing with ukulele and travel.
 - **Matthew Russo**: Senior Software Development Engineer, AWS S3 Express One Zone team.
-````
+
